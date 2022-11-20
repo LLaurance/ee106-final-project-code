@@ -17,3 +17,4 @@ function value_start_stop_duration = reduce_runs(vector)
     % Add duration column
     value_start_stop_duration(:, 4) = value_start_stop_duration(:, 3) - value_start_stop_duration(:, 2) + 1;
 end
+
