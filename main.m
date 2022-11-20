@@ -1,3 +1,9 @@
+% Shortest note time (ms)
+TEMPORAL_THRESHOLD = 10;
+
+% Recording time (s)
+RECORDING_TIME = 10;
+
 % Setup microphone
 deviceReader = audioDeviceReader;
 setup(deviceReader);
@@ -10,7 +16,7 @@ fileWriter = dsp.AudioFileWriter(audio_path, "FileFormat", "WAV");
 disp("Recording for 10 seconds...")
 
 tic
-while toc < 10
+while toc < RECORDING_TIME
     acquiredAudio = deviceReader();
     fileWriter(acquiredAudio);
 end
@@ -26,3 +32,7 @@ release(fileWriter)
 
 % Convert to keys
 keys = arrayfun(@(freq) freq_to_key(freq), f0);
+
+% Convert to duration
+keys_start_stop_duration = reduce_runs(keys);
+
