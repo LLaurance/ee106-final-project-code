@@ -1,5 +1,5 @@
-#include <AccelStepper.h>
 #include "play.h"
+#include <Servo.h>
 
 // Define stepper motor connections and motor interface type. Motor interface type must be set to 1 when using a driver:
 #define DIR 6
@@ -9,12 +9,15 @@
 long stepsPerMM = 400L; 
 int keyLen = 20;
 int handArr[3] = {0,-keyLen*stepsPerMM,-2*keyLen*stepsPerMM}; //index 0=left servo's offset
-int handPins[3] = {7,8,9}; //index 0= left servo's pin, etc
+int handPins[3] = {9,10,11}; //index 0= left servo's pin, etc
 int numWhite = 27;                  
 long currPos = 0L;
 
 // Create a new instance of the AccelStepper class:
-AccelStepper stepper = AccelStepper(motorInterfaceType, PUL, DIR);
+
+Servo myservo;
+Servo myservo1;
+Servo myservo2;
 
 dist_path shortestPath(int *noteArr, int startIdx, int endIdx, long motorPos) {
   if (startIdx == endIdx) {                                                                       //recursive base case 
@@ -66,9 +69,6 @@ dist_path shortestPath(int *noteArr, int startIdx, int endIdx, long motorPos) {
 }
 
 void playNotes(int *noteArr,float *lenArr, int sizeOf) {
-  stepper.setMaxSpeed(1000);
-  stepper.setSpeed(500);
-  stepper.setCurrentPosition(0);
   dist_path d = shortestPath(noteArr, 0, sizeOf, 0);
   Serial.print("dist");
   Serial.println(d.dist);
@@ -139,12 +139,28 @@ void playNote(int note, float timeToPlay, int handIdx) {
   currPos = currPos + moveto;
   Serial.print("current position:");
   Serial.println( currPos);
-  digitalWrite(handPins[handIdx], HIGH);
+  if (handPins[handIdx] == handPins[0]) {
+    myservo.write(60);
+  }
+  else if (handPins[handIdx] == handPins[1]) {
+    myservo.write(60);
+  }
+   else if (handPins[handIdx] == handPins[2]) {
+    myservo.write(90);
+  }
   unsigned long starter = millis();
   while ((millis() - starter) < timeToPlay*1000) {
     continue;
   }
   Serial.println(0);
-  digitalWrite(handPins[handIdx], LOW);
+  if (handPins[handIdx] == handPins[0]) {
+    myservo.write(100);
+  }
+  else if (handPins[handIdx] == handPins[1]) {
+    myservo.write(120);
+  }
+  else if (handPins[handIdx] == handPins[2]) {
+    myservo.write(0);
+  }
   Serial.println("done");
 }
