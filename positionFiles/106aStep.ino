@@ -5,8 +5,7 @@
 #define DIR 6
 #define PUL 7
 #define ENA 5
-#define motorInterfaceType 1
-#define handPin 8    
+#define motorInterfaceType 1  
 int notes[5] = {1,5,10,3,1};
 float lens[5] = {0.5,0.5,0.75,0.125, 1};
 
