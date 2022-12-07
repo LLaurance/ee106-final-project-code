@@ -7,11 +7,12 @@
 #define ENA 37
 #define motorInterfaceType 1
 long stepsPerMM = 400L; 
-int keyLen = 20;
+int keyLen = 22.5;
 int handArr[3] = {0,-keyLen*stepsPerMM,-2*keyLen*stepsPerMM}; //index 0=left servo's offset
 int handPins[3] = {9,10,11}; //index 0= left servo's pin, etc
 int numWhite = 27;                  
 long currPos = 0L;
+int currNote = 0;
 
 // Create a new instance of the AccelStepper class:
 
@@ -68,11 +69,39 @@ dist_path shortestPath(int *noteArr, int startIdx, int endIdx, long motorPos) {
 
 }
 
+dist_path newShortPath(*int noteArr, int arrLen) {
+  dist_path d;
+  d.dist = 0;
+  d.path = 0;
+  for (int i = 0; i<arrLen; i++) {
+    if (getMoveTo(noteArr[i],1) == 0) {
+        d.path = 10 * d.path + 1;
+    }
+    else if (getMoveTo(noteArr[i],0) == 0) {
+        d.path = 10 * d.path + 2;
+    }
+    else if (getMoveTo(noteArr[i],2) == 0) {
+        d.path = 10 * d.path + 3;
+    }
+    else if (noteArr[i]>currNote) {
+        long l = getMoveTo(noteArr[i], 2)
+        d.dist = d.dist + l;
+        d.path = 10* d.path+2;
+    }
+    else if (noteArr[i]<currNote) {
+        long l = getMoveTo(noteArr[i], 1)
+        d.dist = d.dist + l;
+        d.path = 10* d.path+3;
+    }
+    currNote = noteArr[i];
+    Serial.println(currNote);
+  }
+  return d;
+}
+
 void playNotes(int *noteArr,float *lenArr, int sizeOf) {
-  myservo.write(60);
-  myservo1.write(60);
-  myservo2.write(90);
-  dist_path d = shortestPath(noteArr, 0, sizeOf, 0);
+  dist_path d = newShortPath(noteArr, sizeOf);
+  dist_path d;
   Serial.print("dist");
   Serial.println(d.dist);
   long g = d.path;
