@@ -11,6 +11,7 @@ TFT_eSprite spr = TFT_eSprite(&tft);
 #define SAMPLE_RATE 10000         // Hz
 #define PROCESSING_DURATION 10    // seconds
 #define AMPLITUDE_THRESHOLD 300   // mic input must be higher than this amplitude
+#define DURATION_THRESHOLD FRAME_SIZE * 2 // notes must be longer than this duration
 #define DIR 13
 #define PUL 15
 #define ENA 37
@@ -243,7 +244,11 @@ void loop() {
     if (keyIndexSequence[sequenceIndex] == peakKey->index) {
       durationSequence[sequenceIndex] += FRAME_SIZE;
     } else {
-      sequenceIndex += 1;
+      if (durationSequence[sequenceIndex] < DURATION_THRESHOLD) {
+        durationSequence[sequenceIndex] = FRAME_SIZE;
+      } else {
+        sequenceIndex += 1;
+      }
       keyIndexSequence[sequenceIndex] = peakKey->index;
     }
 
