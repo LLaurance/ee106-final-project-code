@@ -2,9 +2,9 @@
 #include <Servo.h>
 
 // Define stepper motor connections and motor interface type. Motor interface type must be set to 1 when using a driver:
-#define DIR 6
-#define PUL 7
-#define ENA 5
+#define DIR 13
+#define PUL 15
+#define ENA 37
 #define motorInterfaceType 1
 long stepsPerMM = 400L; 
 int keyLen = 20;
@@ -69,6 +69,9 @@ dist_path shortestPath(int *noteArr, int startIdx, int endIdx, long motorPos) {
 }
 
 void playNotes(int *noteArr,float *lenArr, int sizeOf) {
+  myservo.write(60);
+  myservo1.write(60);
+  myservo2.write(90);
   dist_path d = shortestPath(noteArr, 0, sizeOf, 0);
   Serial.print("dist");
   Serial.println(d.dist);
@@ -89,7 +92,7 @@ void playNotes(int *noteArr,float *lenArr, int sizeOf) {
 long getMoveTo(int note, int handIdx) {
   long moveto = 0;
   long motor_offset = handArr[handIdx];
-  if (note<=32) {
+  if (note<=35) {
     moveto = (keyLen*note - (keyLen/2))*stepsPerMM + motor_offset - currPos;
   }
   else {
@@ -143,10 +146,10 @@ void playNote(int note, float timeToPlay, int handIdx) {
     myservo.write(60);
   }
   else if (handPins[handIdx] == handPins[1]) {
-    myservo.write(60);
+    myservo1.write(60);
   }
    else if (handPins[handIdx] == handPins[2]) {
-    myservo.write(90);
+    myservo2.write(90);
   }
   unsigned long starter = millis();
   while ((millis() - starter) < timeToPlay*1000) {
@@ -157,10 +160,10 @@ void playNote(int note, float timeToPlay, int handIdx) {
     myservo.write(100);
   }
   else if (handPins[handIdx] == handPins[1]) {
-    myservo.write(120);
+    myservo1.write(120);
   }
   else if (handPins[handIdx] == handPins[2]) {
-    myservo.write(0);
+    myservo2.write(0);
   }
   Serial.println("done");
 }
