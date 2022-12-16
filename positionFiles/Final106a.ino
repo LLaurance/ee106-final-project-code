@@ -12,8 +12,8 @@ TFT_eSprite spr = TFT_eSprite(&tft);
 #define PROCESSING_DURATION 10    // seconds
 #define AMPLITUDE_THRESHOLD 300   // mic input must be higher than this amplitude
 #define DURATION_THRESHOLD FRAME_SIZE * 2 // notes must be longer than this duration
-#define DIR 13
-#define PUL 15
+#define DIR 6
+#define PUL 8
 #define ENA 37
 #define motorInterfaceType 1  
 
